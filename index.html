@@ -1,11 +1,786 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>HealthConscious - Track Your Health</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --coral-primary: #FF6B6B;
+            --coral-light: #FFB4B4;
+            --coral-dark: #E85D5D;
+            --fresh-green: #4ECDC4;
+            --fresh-blue: #45B7D1;
+            --warning-yellow: #FFE66D;
+            --bg-light: #FFF5F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #FFE8E8 100%);
+            min-height: 100vh;
+        }
+
+        /* Auth Pages */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 107, 107, 0.2);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo i {
+            font-size: 60px;
+            color: var(--coral-primary);
+            margin-bottom: 15px;
+        }
+
+        .auth-logo h1 {
+            color: var(--coral-primary);
+            font-weight: 700;
+            font-size: 28px;
+        }
+
+        .auth-logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: var(--coral-primary);
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+        }
+
+        .btn-coral {
+            background: linear-gradient(135deg, var(--coral-primary), var(--coral-dark));
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .btn-coral:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            color: white;
+        }
+
+        /* Main App */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            color: var(--coral-primary);
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress {
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease, background-color 0.5s ease;
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quick-add-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-item {
+            background: white;
+            border: 2px solid var(--coral-light);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-item:hover {
+            background: var(--coral-light);
+            transform: scale(1.05);
+            border-color: var(--coral-primary);
+        }
+
+        .quick-item i {
+            font-size: 40px;
+            color: var(--coral-primary);
+            margin-bottom: 10px;
+        }
+
+        .quick-item h6 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .quick-item small {
+            color: #666;
+        }
+
+        .alert-custom {
+            border-radius: 15px;
+            border: none;
+            padding: 20px;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--coral-primary), var(--coral-dark));
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .history-item {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--coral-primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .quick-add-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stat-number {
+                font-size: 36px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <p>rafina</p>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>HealthConscious</h1>
+                <p>Monitor Gula & Kafein Harianmu</p>
+            </div>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="loginEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" required>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember Me</label>
+                </div>
+                <button type="submit" class="btn btn-coral w-100 mb-3">Login</button>
+                <div class="text-center">
+                    <small>Belum punya akun? <a href="#" id="showRegister" style="color: var(--coral-primary);">Daftar di sini</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="registerPage" class="auth-container hidden">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>Daftar Akun</h1>
+                <p>Mulai hidup lebih sehat hari ini</p>
+            </div>
+            <div id="registerAlert"></div>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" class="form-control" id="registerName" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="registerEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password (min. 6 karakter)</label>
+                    <input type="password" class="form-control" id="registerPassword" required minlength="6">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Konfirmasi Password</label>
+                    <input type="password" class="form-control" id="registerConfirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-coral w-100 mb-3">Daftar</button>
+                <div class="text-center">
+                    <small>Sudah punya akun? <a href="#" id="showLogin" style="color: var(--coral-primary);">Login di sini</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand" href="#"><i class="fas fa-heartbeat"></i> HealthConscious</a>
+                <div class="d-flex align-items-center">
+                    <span class="me-3" id="userName">Hi, User!</span>
+                    <button class="btn btn-sm btn-outline-danger" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- Dashboard Cards -->
+            <div class="row">
+                <!-- Sugar Card -->
+                <div class="col-md-6">
+                    <div class="dashboard-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5><i class="fas fa-candy-cane text-danger"></i> Konsumsi Gula</h5>
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#profileModal">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <div class="stat-number text-danger" id="sugarCount">0</div>
+                            <div class="stat-label">gram dari <span id="sugarLimit">50</span>g</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" id="sugarProgress" role="progressbar" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Caffeine Card -->
+                <div class="col-md-6">
+                    <div class="dashboard-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5><i class="fas fa-coffee text-warning"></i> Konsumsi Kafein</h5>
+                            <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#historyModal">
+                                <i class="fas fa-history"></i>
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <div class="stat-number text-warning" id="caffeineCount">0</div>
+                            <div class="stat-label">mg dari <span id="caffeineLimit">400</span>mg</div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" id="caffeineProgress" role="progressbar" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Add Section -->
+            <div class="dashboard-card mt-4">
+                <h5 class="mb-3"><i class="fas fa-bolt"></i> Quick Add - Tambah Cepat</h5>
+                <div class="quick-add-grid">
+                    <div class="quick-item" onclick="quickAdd('Kopi Susu', 20, 150)">
+                        <i class="fas fa-mug-hot"></i>
+                        <h6>Kopi Susu</h6>
+                        <small>20g | 150mg</small>
+                    </div>
+                    <div class="quick-item" onclick="quickAdd('Boba', 35, 50)">
+                        <i class="fas fa-glass-whiskey"></i>
+                        <h6>Boba</h6>
+                        <small>35g | 50mg</small>
+                    </div>
+                    <div class="quick-item" onclick="quickAdd('Soda', 40, 35)">
+                        <i class="fas fa-wine-bottle"></i>
+                        <h6>Soda</h6>
+                        <small>40g | 35mg</small>
+                    </div>
+                    <div class="quick-item" onclick="quickAdd('Kopi Hitam', 0, 95)">
+                        <i class="fas fa-coffee"></i>
+                        <h6>Kopi Hitam</h6>
+                        <small>0g | 95mg</small>
+                    </div>
+                    <div class="quick-item" onclick="quickAdd('Teh Manis', 25, 40)">
+                        <i class="fas fa-mug-hot"></i>
+                        <h6>Teh Manis</h6>
+                        <small>25g | 40mg</small>
+                    </div>
+                    <div class="quick-item" onclick="quickAdd('Energy Drink', 30, 80)">
+                        <i class="fas fa-bolt"></i>
+                        <h6>Energy Drink</h6>
+                        <small>30g | 80mg</small>
+                    </div>
+                </div>
+
+                <!-- Custom Input -->
+                <div class="mt-4">
+                    <h6><i class="fas fa-edit"></i> Input Manual</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="customName" placeholder="Nama minuman">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control" id="customSugar" placeholder="Gula (g)">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control" id="customCaffeine" placeholder="Kafein (mg)">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-coral w-100" onclick="addCustom()">
+                                <i class="fas fa-plus"></i> Tambah
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile/Settings Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-cog"></i> Pengaturan Profil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="profileForm">
+                        <div class="mb-3">
+                            <label class="form-label">Berat Badan (kg)</label>
+                            <input type="number" class="form-control" id="weight" value="60">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Usia (tahun)</label>
+                            <input type="number" class="form-control" id="age" value="25">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Goal Setting</label>
+                            <select class="form-select" id="goalSetting">
+                                <option value="monitoring">Monitoring (Normal)</option>
+                                <option value="cut">Cut Sugar (Diet Ketat)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-coral w-100">Simpan Pengaturan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-history"></i> Riwayat Konsumsi</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="historyList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple encryption (base64)
+        function encrypt(text) {
+            return btoa(text);
+        }
+
+        function decrypt(text) {
+            return atob(text);
+        }
+
+        // Check if user is logged in
+        function checkAuth() {
+            const session = localStorage.getItem('healthSession');
+            if (session) {
+                const user = JSON.parse(session);
+                showMainApp(user);
+            } else {
+                document.getElementById('loginPage').classList.remove('hidden');
+            }
+        }
+
+        // Show/Hide pages
+        document.getElementById('showRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+        });
+
+        document.getElementById('showLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+        });
+
+        // Register
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showAlert('registerAlert', 'Password tidak cocok!', 'danger');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('healthUsers') || '[]');
+            
+            if (users.find(u => u.email === email)) {
+                showAlert('registerAlert', 'Email sudah terdaftar!', 'danger');
+                return;
+            }
+
+            users.push({
+                name,
+                email,
+                password: encrypt(password),
+                createdAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('healthUsers', JSON.stringify(users));
+            showAlert('registerAlert', 'Registrasi berhasil! Silakan login.', 'success');
+            
+            setTimeout(() => {
+                document.getElementById('registerPage').classList.add('hidden');
+                document.getElementById('loginPage').classList.remove('hidden');
+            }, 1500);
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            let users = JSON.parse(localStorage.getItem('healthUsers') || '[]');
+            const user = users.find(u => u.email === email && decrypt(u.password) === password);
+
+            if (user) {
+                const session = {
+                    name: user.name,
+                    email: user.email,
+                    remember
+                };
+                localStorage.setItem('healthSession', JSON.stringify(session));
+                showMainApp(session);
+            } else {
+                showAlert('loginAlert', 'Email atau password salah!', 'danger');
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            const session = JSON.parse(localStorage.getItem('healthSession'));
+            if (!session.remember) {
+                localStorage.removeItem('healthSession');
+            }
+            localStorage.removeItem('healthData');
+            location.reload();
+        });
+
+        function showAlert(elementId, message, type) {
+            const alertDiv = document.getElementById(elementId);
+            alertDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+        }
+
+        function showMainApp(user) {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userName').textContent = `Hi, ${user.name}!`;
+            
+            loadData();
+            checkAutoReset();
+            loadProfile();
+        }
+
+        // App Data Management
+        let appData = {
+            sugar: 0,
+            caffeine: 0,
+            sugarLimit: 50,
+            caffeineLimit: 400,
+            history: [],
+            lastReset: new Date().toDateString()
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem('healthData');
+            if (saved) {
+                appData = JSON.parse(saved);
+                checkAutoReset();
+            }
+            updateUI();
+        }
+
+        function saveData() {
+            localStorage.setItem('healthData', JSON.stringify(appData));
+        }
+
+        function checkAutoReset() {
+            const today = new Date().toDateString();
+            if (appData.lastReset !== today) {
+                appData.sugar = 0;
+                appData.caffeine = 0;
+                appData.lastReset = today;
+                saveData();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('sugarCount').textContent = appData.sugar;
+            document.getElementById('caffeineCount').textContent = appData.caffeine;
+            document.getElementById('sugarLimit').textContent = appData.sugarLimit;
+            document.getElementById('caffeineLimit').textContent = appData.caffeineLimit;
+
+            updateProgress('sugar');
+            updateProgress('caffeine');
+            checkWarnings();
+        }
+
+        function updateProgress(type) {
+            const current = appData[type];
+            const limit = appData[type + 'Limit'];
+            const percentage = Math.min((current / limit) * 100, 100);
+            const progressBar = document.getElementById(type + 'Progress');
+            
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = Math.round(percentage) + '%';
+
+            if (percentage >= 100) {
+                progressBar.className = 'progress-bar bg-danger';
+            } else if (percentage >= 80) {
+                progressBar.className = 'progress-bar bg-warning';
+            } else {
+                progressBar.className = 'progress-bar bg-success';
+            }
+        }
+
+        function checkWarnings() {
+            const sugarPercent = (appData.sugar / appData.sugarLimit) * 100;
+            const caffeinePercent = (appData.caffeine / appData.caffeineLimit) * 100;
+
+            if (sugarPercent >= 80 && sugarPercent < 100) {
+                showAppAlert('Hati-hati! Konsumsi gula kamu sudah 80%. Mending minum air putih yuk! 💧', 'warning');
+            } else if (sugarPercent >= 100) {
+                showAppAlert('Waduh! Limit gula harian sudah terlampaui! Time to detox! 🚫', 'danger');
+            }
+
+            if (caffeinePercent >= 80 && caffeinePercent < 100) {
+                showAppAlert('Satu gelas lagi kamu bakal gemeteran! Istirahat dulu yuk! ☕', 'warning');
+            } else if (caffeinePercent >= 100) {
+                showAppAlert('Kafein overload! Jantung kamu butuh istirahat! ❤️', 'danger');
+            }
+        }
+
+        function showAppAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertId = 'alert-' + Date.now();
+            alertContainer.innerHTML = `<div id="${alertId}" class="alert alert-${type} alert-custom alert-dismissible fade show" role="alert">
+                <strong><i class="fas fa-exclamation-triangle"></i></strong> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+
+            setTimeout(() => {
+                const alert = document.getElementById(alertId);
+                if (alert) alert.remove();
+            }, 5000);
+        }
+
+        function quickAdd(name, sugar, caffeine) {
+            appData.sugar += sugar;
+            appData.caffeine += caffeine;
+            
+            appData.history.unshift({
+                name,
+                sugar,
+                caffeine,
+                timestamp: new Date().toLocaleString('id-ID')
+            });
+
+            if (appData.history.length > 20) {
+                appData.history = appData.history.slice(0, 20);
+            }
+
+            saveData();
+            updateUI();
+            showAppAlert(`✅ ${name} berhasil ditambahkan!`, 'success');
+        }
+
+        function addCustom() {
+            const name = document.getElementById('customName').value;
+            const sugar = parseInt(document.getElementById('customSugar').value) || 0;
+            const caffeine = parseInt(document.getElementById('customCaffeine').value) || 0;
+
+            if (!name) {
+                showAppAlert('Isi nama minuman dulu dong! 😅', 'warning');
+                return;
+            }
+
+            quickAdd(name, sugar, caffeine);
+            
+            document.getElementById('customName').value = '';
+            document.getElementById('customSugar').value = '';
+            document.getElementById('customCaffeine').value = '';
+        }
+
+        // Profile Settings
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('healthProfile') || '{}');
+            if (profile.weight) document.getElementById('weight').value = profile.weight;
+            if (profile.age) document.getElementById('age').value = profile.age;
+            if (profile.goal) document.getElementById('goalSetting').value = profile.goal;
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const weight = parseInt(document.getElementById('weight').value);
+            const age = parseInt(document.getElementById('age').value);
+            const goal = document.getElementById('goalSetting').value;
+
+            // Calculate limits based on profile
+            if (goal === 'cut') {
+                appData.sugarLimit = 25; // Strict diet
+                appData.caffeineLimit = 200;
+            } else {
+                appData.sugarLimit = 50; // Normal monitoring
+                appData.caffeineLimit = 400;
+            }
+
+            const profile = { weight, age, goal };
+            localStorage.setItem('healthProfile', JSON.stringify(profile));
+            saveData();
+            updateUI();
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+            modal.hide();
+            showAppAlert('Pengaturan berhasil disimpan! 🎉', 'success');
+        });
+
+        // History Modal
+        document.getElementById('historyModal').addEventListener('show.bs.modal', () => {
+            const historyList = document.getElementById('historyList');
+            if (appData.history.length === 0) {
+                historyList.innerHTML = '<p class="text-center text-muted">Belum ada riwayat konsumsi</p>';
+                return;
+            }
+
+            historyList.innerHTML = appData.history.map(item => `
+                <div class="history-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>${item.name}</strong>
+                        <small class="text-muted">${item.timestamp}</small>
+                    </div>
+                    <div class="mt-2">
+                        <span class="badge bg-danger me-2">🍬 ${item.sugar}g</span>
+                        <span class="badge bg-warning">☕ ${item.caffeine}mg</span>
+                    </div>
+                </div>
+            `).join('');
+        });
+
+        // Initialize app
+        checkAuth();
+    </script>
 </body>
 </html>
